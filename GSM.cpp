@@ -24,8 +24,14 @@ based on QuectelM10 chip.
 
 //De-comment this two lines below if you have the
 //second version og GSM GPRS Shield
-#define _GSM_TXPIN_ 2
-#define _GSM_RXPIN_ 3
+
+// Leonardo 
+#define _GSM_TXPIN_ 10
+#define _GSM_RXPIN_ 11	
+
+// Uno, etc.
+// #define _GSM_TXPIN_ 2
+// #define _GSM_RXPIN_ 3
 
 #ifdef UNO
 GSM::GSM():_cell(_GSM_TXPIN_,_GSM_RXPIN_),_tf(_cell, 10),_status(IDLE)
@@ -35,6 +41,15 @@ GSM::GSM():_cell(_GSM_TXPIN_,_GSM_RXPIN_),_tf(_cell, 10),_status(IDLE)
 #ifdef MEGA
 GSM::GSM()
 {
+     _cell.begin(9600);
+};
+#endif
+#ifdef LEONARDO
+GSM::GSM():_tf(_cell, 10),_status(IDLE)
+{
+     while (!_cell) {
+       ; // wait for serial port to connect. Needed for Leonardo only
+     }
      _cell.begin(9600);
 };
 #endif
@@ -57,6 +72,11 @@ int GSM::begin(long baud_rate)
      boolean norep=true;
      boolean turnedON=false;
      SetCommLineStatus(CLS_ATCMD);
+#ifdef LEONARDO
+     while (!_cell) {
+       ; // wait for serial port to connect. Needed for Leonardo only
+     }
+#endif
      _cell.begin(baud_rate);
      p_comm_buf = &comm_buf[0];
      setStatus(IDLE);

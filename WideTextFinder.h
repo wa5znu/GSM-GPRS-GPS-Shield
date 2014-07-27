@@ -3,12 +3,23 @@
 
 //#include <WProgram.h>
 #include <Arduino.h>
-#include <SoftwareSerial.h>
 
+#define LEONARDO 1
+// #define UNO 1
+// #define MEGA 1
+
+#ifdef UNO
+#include <SoftwareSerial.h>
+#endif
 
 class WideTextFinder {
 private:
+#ifdef UNO
      SoftwareSerial* nSerialStream;
+#endif
+#ifdef LEONARDO
+     HardwareSerial *nSerialStream;
+#endif
 
      unsigned long timeout;    // number of seconds to wait for the next char before aborting read
      unsigned long startMillis; // used for timeout measurement
@@ -19,7 +30,12 @@ private:
 public:
      // constructor:
      // default timeout is 5 seconds
+#ifdef UNO
      WideTextFinder(SoftwareSerial &stream, int timeout = 5);          // Ethernet constructor
+#endif
+#ifdef LEONARDO
+     WideTextFinder(HardwareSerial &stream, int timeout = 5);          // Ethernet constructor
+#endif
 
      // Manage debug
      void setDebug(boolean d);

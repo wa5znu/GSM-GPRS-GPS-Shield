@@ -82,6 +82,7 @@ martines[ dot ]marco[ at ]gmail[ dot ]com
 
 	3)	Arduino Uno has 2 KB of RAM. Library takes about 80% (we are working
 		to reduce it), if you use more than 20% left, Arduino can restart
-		or print on serial strange strings.
+		or print on serial strange strings.  Arduino Leonardo has 2.5KB RAM,
+                but only 28KB flash free.
 
 	4)	Check the jumper of communication, power source (battery or externel) and charge.

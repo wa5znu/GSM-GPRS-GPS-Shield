@@ -24,12 +24,27 @@ char WideTextFinder::read()
 // constructors
 //default timeout is 5 seconds
 
+#define LEONARDO 1
+// #define UNO 1
+// #define MEGA 1
+
+#ifdef UNO
 WideTextFinder::WideTextFinder(SoftwareSerial &stream, int timeout) :
      nSerialStream(&stream)
 {
      this->timeout = timeout * 1000L;
      debug=true;
 }
+#endif
+
+#ifdef LEONARDO
+WideTextFinder::WideTextFinder(HardwareSerial &stream, int timeout) :
+     nSerialStream(&stream)
+{
+     this->timeout = timeout * 1000L;
+     debug=true;
+}
+#endif
 
 void WideTextFinder::setDebug(boolean d)
 {

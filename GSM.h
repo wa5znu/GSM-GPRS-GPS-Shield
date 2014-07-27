@@ -1,8 +1,9 @@
 #ifndef GSM_H
 #define GSM_H
 
-#define UNO
-//#define MEGA
+#define LEONARDO 1
+// #define UNO 1
+// #define MEGA 1
 
 #include <SoftwareSerial.h>
 #include <inttypes.h>
@@ -184,15 +185,21 @@ private:
 
 protected:
 #ifdef MEGA
-     HWSerial _cell;
+     HardwareSerial _cell;
 #endif
 #ifdef UNO
      SoftwareSerial _cell;
+#endif
+#ifdef LEONARDO
+     #define _cell Serial1
 #endif
      int isIP(const char* cadena);
 
 public:
 #ifdef UNO
+     WideTextFinder _tf;
+#endif
+#ifdef LEONARDO
      WideTextFinder _tf;
 #endif
      inline void setStatus(GSM_st_e status) {
