@@ -26,8 +26,11 @@ an example of usage:
 **********************************************************/
 char SMSGSM::SendSMS(char *number_str, char *message_str)
 {
-     if(strlen(message_str)>159)
-          Serial.println(F("Don't send message longer than 160 characters"));
+     if(strlen(message_str)>159) {
+#ifdef DEBUG_ON
+        Serial.println(F("Don't send message longer than 160 characters"));
+#endif
+     }
      char ret_val = -1;
      byte i;
      char end[2];
