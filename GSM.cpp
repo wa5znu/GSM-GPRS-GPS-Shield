@@ -193,13 +193,17 @@ int GSM::begin(long baud_rate)
      }
 
      if(norep==true&&!turnedON) {
+#ifdef DEBUG_ON
           Serial.println(F("Trying to force the baud-rate to 9600\n"));
+#endif
           for (int i=0; i<8; i++) {
                switch (i) {
                case 0:
                     _cell.begin(1200);
                     delay(1000);
+#ifdef DEBUG_ON
                     Serial.println(F("1200"));
+#endif
                     _cell.print(F("AT+IPR=9600\r"));
                     delay(1000);
                     _cell.begin(9600);
@@ -212,7 +216,9 @@ int GSM::begin(long baud_rate)
                case 1:
                     _cell.begin(2400);
                     delay(1000);
+#ifdef DEBUG_ON
                     Serial.println(F("2400"));
+#endif
                     _cell.print(F("AT+IPR=9600\r"));
                     delay(1000);
                     _cell.begin(9600);
@@ -225,7 +231,9 @@ int GSM::begin(long baud_rate)
                case 2:
                     _cell.begin(4800);
                     delay(1000);
+#ifdef DEBUG_ON
                     Serial.println(F("4800"));
+#endif
                     _cell.print(F("AT+IPR=9600\r"));
                     delay(1000);
                     _cell.begin(9600);
@@ -238,7 +246,9 @@ int GSM::begin(long baud_rate)
                case 3:
                     _cell.begin(9600);
                     delay(1000);
+#ifdef DEBUG_ON
                     Serial.println(F("9600"));
+#endif
                     _cell.print(F("AT+IPR=9600\r"));
                     delay(1000);
                     _cell.begin(9600);
@@ -251,7 +261,9 @@ int GSM::begin(long baud_rate)
                case 4:
                     _cell.begin(19200);
                     delay(1000);
+#ifdef DEBUG_ON
                     Serial.println(F("19200"));
+#endif
                     _cell.print(F("AT+IPR=9600\r"));
                     delay(1000);
                     _cell.begin(9600);
@@ -264,7 +276,9 @@ int GSM::begin(long baud_rate)
                case 5:
                     _cell.begin(38400);
                     delay(1000);
+#ifdef DEBUG_ON
                     Serial.println(F("38400"));
+#endif
                     _cell.print(F("AT+IPR=9600\r"));
                     delay(1000);
                     _cell.begin(9600);
@@ -277,7 +291,9 @@ int GSM::begin(long baud_rate)
                case 6:
                     _cell.begin(57600);
                     delay(1000);
+#ifdef DEBUG_ON
                     Serial.println(F("57600"));
+#endif
                     _cell.print(F("AT+IPR=9600\r"));
                     delay(1000);
                     _cell.begin(9600);
@@ -290,7 +306,9 @@ int GSM::begin(long baud_rate)
                case 7:
                     _cell.begin(115200);
                     delay(1000);
+#ifdef DEBUG_ON
                     Serial.println(F("115200"));
+#endif
                     _cell.print(F("AT+IPR=9600\r"));
                     delay(1000);
                     _cell.begin(9600);
@@ -302,7 +320,9 @@ int GSM::begin(long baud_rate)
                }
           }
 
+#ifdef DEBUG_ON
           Serial.println(F("ERROR: SIM900 doesn't answer. Check power and serial pins in GSM.cpp"));
+#endif
           digitalWrite(GSM_ON, HIGH);
           delay(1200);
           digitalWrite(GSM_ON, LOW);
