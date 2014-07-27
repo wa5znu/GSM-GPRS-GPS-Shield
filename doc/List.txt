@@ -16,7 +16,7 @@ char forceON();
 int getIMEI(char* imei);
 	Get the IMEI code of the phone and save it on the imei string.
 	
-boolean readSMS(char* msg, int msglength, char* number, int nlength);
+boolean readSMS(char* msg, int msglength, char* number, char *date_time, int nlength);
 	Read the first msglength byte of the SMS string and save it to the msg string.
 	Save the first nlenght numbers of the sender number to the number string.
 
@@ -98,12 +98,12 @@ char IsSMSPresent(byte required_status);
 		SMS_READ
 		SMS_ALL
 		
-char GetSMS(byte position, char *phone_number, char *SMS_text, byte max_SMS_len);
+char GetSMS(byte position, char *phone_number, char *date_time, char *SMS_text, byte max_SMS_len);
 	Save the SMS content and sender of the SMS in specified SIM position.
 	Save the first max_SMS_len byte of the SMS string to the SMS_text string and
 	the sender to the phone_number string.
 
-char GetAuthorizedSMS(byte position, char *phone_number, char *SMS_text, byte max_SMS_len,
+char GetAuthorizedSMS(byte position, char *phone_number, char *date_time, char *SMS_text, byte max_SMS_len,
 					  byte first_authorized_pos, byte last_authorized_pos);
 	Method reads SMS from specified SIM position and
 	makes authorization. It means SMS phone number is compared

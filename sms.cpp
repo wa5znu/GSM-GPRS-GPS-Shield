@@ -248,7 +248,10 @@ Method reads SMS from specified memory(SIM) position
 position:     SMS position <1..20>
 phone_number: a pointer where the phone number string of received SMS will be placed
               so the space for the phone number string must be reserved - see example
+date_time :   a pointer to where the date and time of the received SMS will be placed.
+              so the space for the date_time string must be reserved - see example
 SMS_text  :   a pointer where SMS text will be placed
+              so the space for the SMS_text string must be reserved - see example
 max_SMS_len:  maximum length of SMS text excluding also string terminating 0x00 character
 
 return:
@@ -270,21 +273,24 @@ an example of usage:
         GSM gsm;
         char position;
         char phone_num[20]; // array for the phone number string
+        char date_time[24]; // array for the date_time string
         char sms_text[100]; // array for the SMS text string
 
         position = gsm.IsSMSPresent(SMS_UNREAD);
         if (position) {
           // there is new SMS => read it
-          gsm.GetSMS(position, phone_num, sms_text, 100);
+          gsm.GetSMS(position, phone_num, date_time, sms_text, 100);
           #ifdef DEBUG_PRINT
             gsm.DebugPrint("DEBUG SMS phone number: ", 0);
             gsm.DebugPrint(phone_num, 0);
+            gsm.DebugPrint("DEBUG SMS time: ", 0);
+            gsm.DebugPrint(date_time, 0);
             gsm.DebugPrint("\r\n          SMS text: ", 0);
             gsm.DebugPrint(sms_text, 1);
           #endif
         }
 **********************************************************/
-char SMSGSM::GetSMS(byte position, char *phone_number, char *SMS_text, byte max_SMS_len)
+char SMSGSM::GetSMS(byte position, char *phone_number, char *date_time, char *SMS_text, byte max_SMS_len)
 {
      char ret_val = -1;
      char *p_char;
@@ -325,7 +331,7 @@ char SMSGSM::GetSMS(byte position, char *phone_number, char *SMS_text, byte max_
           // find out what was received exactly
 
           //response for new SMS:
-          //<CR><LF>+CMGR: "REC UNREAD","+XXXXXXXXXXXX",,"02/03/18,09:54:28+40"<CR><LF>
+          //<CR><LF>+CMGR: "REC UNREAD","+XXXXXXXXXXXX","","02/03/18,09:54:28+40"<CR><LF>
           //There is SMS text<CR><LF>OK<CR><LF>
           if(gsm.IsStringReceived("\"REC UNREAD\"")) {
                // get phone number of received SMS: parse phone number string
@@ -334,7 +340,7 @@ char SMSGSM::GetSMS(byte position, char *phone_number, char *SMS_text, byte max_
                ret_val = GETSMS_UNREAD_SMS;
           }
           //response for already read SMS = old SMS:
-          //<CR><LF>+CMGR: "REC READ","+XXXXXXXXXXXX",,"02/03/18,09:54:28+40"<CR><LF>
+          //<CR><LF>+CMGR: "REC READ","+XXXXXXXXXXXX","","14/06/08,13:20:18-28"<CR><LF>
           //There is SMS text<CR><LF>
           else if(gsm.IsStringReceived("\"REC READ\"")) {
                // get phone number of received SMS
@@ -355,10 +361,26 @@ char SMSGSM::GetSMS(byte position, char *phone_number, char *SMS_text, byte max_
                strcpy(phone_number, (char *)(p_char1));
           }
 
+          // skip next field, apparently empty
+          // ---------------------------------
+          p_char = strchr(p_char+1, ',');
+          p_char1 = p_char+2; 
+          p_char = strchr((char *)(p_char1),'"');
+          
+          // extract date
+          // ---------------------------
+          p_char = strchr(p_char+1, ',');
+          p_char1 = p_char+2; // we are on the date time character
+          p_char = strchr((char *)(p_char1),'"');
+          if (p_char != NULL) {
+               *p_char = 0; // end of string
+               strcpy(date_time, (char *)(p_char1));
+          }
 
           // get SMS text and copy this text to the SMS_text buffer
           // ------------------------------------------------------
           p_char = strchr(p_char+1, 0x0a);  // find <LF>
+
           if (p_char != NULL) {
                // next character after <LF> is the first SMS character
                p_char++; // now we are on the first SMS character
@@ -441,10 +463,11 @@ return:
 an example of usage:
         GSM gsm;
         char phone_num[20]; // array for the phone number string
+        char date_time[24]; // array for the date and time string
         char sms_text[100]; // array for the SMS text string
 
         // authorize SMS with SIM phonebook positions 1..3
-        if (GETSMS_AUTH_SMS == gsm.GetAuthorizedSMS(1, phone_num, sms_text, 100, 1, 3)) {
+        if (GETSMS_AUTH_SMS == gsm.GetAuthorizedSMS(1, phone_num, date_time, sms_text, 100, 1, 3)) {
           // new authorized SMS was detected at the SMS position 1
           #ifdef DEBUG_PRINT
             gsm.DebugPrint("DEBUG SMS phone number: ", 0);
@@ -455,7 +478,7 @@ an example of usage:
         }
 
         // don't authorize SMS with SIM phonebook at all
-        if (GETSMS_AUTH_SMS == gsm.GetAuthorizedSMS(1, phone_num, sms_text, 100, 0, 0)) {
+        if (GETSMS_AUTH_SMS == gsm.GetAuthorizedSMS(1, phone_num, date_time sms_text, 100, 0, 0)) {
           // new SMS was detected at the SMS position 1
           // because authorization was not required
           // SMS is considered authorized
@@ -467,13 +490,13 @@ an example of usage:
           #endif
         }
 **********************************************************/
-char SMSGSM::GetAuthorizedSMS(byte position, char *phone_number, char *SMS_text, byte max_SMS_len,
+char SMSGSM::GetAuthorizedSMS(byte position, char *phone_number, char *date_time, char *SMS_text, byte max_SMS_len,
                               byte first_authorized_pos, byte last_authorized_pos)
 {
      char ret_val = -1;
      byte i;
 
-     ret_val = GetSMS(position, phone_number, SMS_text, max_SMS_len);
+     ret_val = GetSMS(position, phone_number, date_time, SMS_text, max_SMS_len);
      if (ret_val < 0) {
           // here is ERROR return code => finish
           // -----------------------------------

@@ -1,7 +1,12 @@
 GSM/GPRS & GPS Shield Library for modules using SIM900/SIM908
 ======
-NOTE: This repo has been migrated from google code repo: http://code.google.com/p/gsm-shield-arduino/
 
+## WA5ZNU Updates
+- Added Leonardo support
+- ifdef remove more Serial.println
+- Add date_time field to received SMS
+
+NOTE: This repo has been migrated from google code repo: http://code.google.com/p/gsm-shield-arduino/
 
 For informations and support:
 - http://www.gsmlib.org/

@@ -152,7 +152,10 @@ char GetSMS(byte position, char *phone_number, char *SMS_text, byte max_SMS_len)
 	position: SMS position <1..20>
 	phone_number: a pointer where the phone number string of received SMS will be placed
 	so the space for the phone number string must be reserved – see example
+        date_time: a pointer to where the date and time of the received SMS will be placed.
+                  so the space for the date_time string must be reserved - see example
 	SMS_text : a pointer where SMS text will be placed
+                  so the space for the SMS_text string must be reserved - see example
 	max_SMS_len: maximum length of SMS text excluding also string terminating 0×00 character
 	return:
 	ERROR ret. val:
@@ -171,13 +174,16 @@ char GetSMS(byte position, char *phone_number, char *SMS_text, byte max_SMS_len)
 	SMSGSM sms_classname;
 	char position;
 	char phone_num[20]; // array for the phone number string
+	char date_time[24]; // array for the date_time string
 	char sms_text[100]; // array for the SMS text string
 	position = sms_classname.IsSMSPresent(SMS_UNREAD);
 	if (position) {
 	// there is new SMS => read it
-	sms_classname.GetGSM(position, phone_num, sms_text, 100);
+	sms_classname.GetGSM(position, phone_num, date_time, sms_text, 100);
 	Serial.println(“DEBUG SMS phone number: “, 0);
 	Serial.println(phone_num, 0);
+	Serial.println(“\r\n date_time: “, 0);
+	Serial.println(date_time, 0);
 	Serial.println(“\r\n SMS text: “, 0);
 	Serial.println(sms_text, 1);
 	}

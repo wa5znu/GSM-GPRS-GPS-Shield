@@ -22,6 +22,7 @@ int numdata;
 boolean started=false;
 char smsbuffer[160];
 char n[20];
+char d[25];
 
 void setup()
 {
@@ -47,8 +48,9 @@ void loop()
 {
      if(started) {
           //Read if there are messages on SIM card and print them.
-          if(gsm.readSMS(smsbuffer, 160, n, 20)) {
+          if(gsm.readSMS(smsbuffer, 160, n, d, 20)) {
                Serial.println(n);
+               Serial.println(d);
                Serial.println(smsbuffer);
           }
           delay(1000);
