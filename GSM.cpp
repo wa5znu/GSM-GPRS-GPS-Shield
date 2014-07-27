@@ -50,7 +50,7 @@ GSM::GSM():_tf(_cell, 10),_status(IDLE)
      while (!_cell) {
        ; // wait for serial port to connect. Needed for Leonardo only
      }
-     _cell.begin(9600);
+     _cell.begin(115200);
 };
 #endif
 
@@ -63,7 +63,9 @@ int GSM::begin(long baud_rate)
 
 #ifdef UNO
      if (baud_rate==115200) {
+#ifdef DEBUG_ON
           Serial.println(F("Don't use baudrate 115200 with Software Serial.\nAutomatically changed at 9600."));
+#endif
           baud_rate=9600;
      }
 #endif
